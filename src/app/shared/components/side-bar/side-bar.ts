@@ -1,7 +1,9 @@
-import { Component, HostBinding, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, HostBinding, HostListener, PLATFORM_ID, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Track } from '../../../core/services/music-service';
 import { PlaylistService } from '../../../core/services/playlist-service';
+import { AudioService } from '../../../core/services/audio-service';
 @Component({
   selector: 'app-side-bar',
   standalone: true,
@@ -10,8 +12,18 @@ import { PlaylistService } from '../../../core/services/playlist-service';
   imports: [RouterLink, CommonModule],
 })
 export class SideBarComponent {
+  private libraryStorageKey = 'soundhub_library_tracks';
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+
   playlistService = inject(PlaylistService);
+  audioService = inject(AudioService);
+  libraryTracks = signal<Track[]>([]);
   expanded = false; //Estado interno , cuando true: Abierto y false: cerrado
+
+  constructor() {
+    this.loadLibraryTracks();
+  }
 
   onMouseEnter() {
     console.log('ENTER');
@@ -39,6 +51,52 @@ export class SideBarComponent {
 
   onMouseLeaveLibrary() {
     this.isLibraryMenuOpen = false;
+  }
+
+  playFromLibrary(event: Event, track: Track) {
+    event.stopPropagation();
+    this.audioService.playTrack(track, this.libraryTracks());
+  }
+
+  isTrackPlaying(track: Track): boolean {
+    return this.audioService.isPlaying() && this.audioService.currentTrack()?.trackId === track.trackId;
+  }
+
+  @HostListener('window:soundhub-library-updated')
+  onLibraryUpdated() {
+    this.loadLibraryTracks();
+  }
+
+  @HostListener('window:storage', ['$event'])
+  onStorageUpdate(event: StorageEvent) {
+    if (event.key === this.libraryStorageKey) {
+      this.loadLibraryTracks();
+    }
+  }
+
+  private loadLibraryTracks() {
+    if (!this.isBrowser) {
+      this.libraryTracks.set([]);
+      return;
+    }
+
+    try {
+      const raw = localStorage.getItem(this.libraryStorageKey);
+      if (!raw) {
+        this.libraryTracks.set([]);
+        return;
+      }
+
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) {
+        this.libraryTracks.set([]);
+        return;
+      }
+
+      this.libraryTracks.set(parsed as Track[]);
+    } catch {
+      this.libraryTracks.set([]);
+    }
   }
 
   @HostBinding('class.expanded')

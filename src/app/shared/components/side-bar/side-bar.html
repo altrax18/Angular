@@ -6,9 +6,39 @@
 
     @if (isLibraryMenuOpen && expanded) {
     <div class="submenu">
-      <button routerLink="/playlists">+ Crear lista</button>
+      <button routerLink="/playlists" class="submenu-link">+ Crear lista</button>
+
+      <p class="submenu-title">Tu biblioteca</p>
+      @if (libraryTracks().length === 0) {
+      <span class="submenu-empty">Anade canciones desde el menu de 3 puntos.</span>
+      } @else {
+      @for (track of libraryTracks(); track track.trackId) {
+      <div class="submenu-track">
+        <button
+          type="button"
+          class="submenu-link track-name"
+          (click)="playFromLibrary($event, track)"
+        >
+          {{ track.trackName }}
+        </button>
+        <button
+          type="button"
+          class="track-play-btn"
+          (click)="playFromLibrary($event, track)"
+        >
+          {{ isTrackPlaying(track) ? 'Pausa' : 'Play' }}
+        </button>
+      </div>
+      }
+      }
+
+      <p class="submenu-title">Tus listas</p>
+      @if (playlistService.playlists().length === 0) {
+      <span class="submenu-empty">Todavia no tienes listas.</span>
+      } @else {
       @for (list of playlistService.playlists(); track list.id) {
-      <button routerLink="/playlists">{{ list.name }}</button>
+      <button routerLink="/playlists" class="submenu-link">{{ list.name }}</button>
+      }
       }
     </div>
     }
@@ -22,7 +52,7 @@
     <span class="icon">*</span>
     <span class="label">Buscar</span>
 
-    @if (isSearchMenuOpen) {
+    @if (isSearchMenuOpen && expanded) {
     <div class="submenu">
       <button routerLink="/tracks">Canciones</button>
     </div>

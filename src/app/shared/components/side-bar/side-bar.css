@@ -4,11 +4,20 @@
   top: 72px;
   height: calc(100vh - 72px);
   z-index: 99;
+  width: 72px;
+  flex: 0 0 72px;
+  overflow: visible;
+  transition: width 0.25s ease, flex-basis 0.25s ease;
+}
+
+:host(.expanded) {
+  width: 260px;
+  flex: 0 0 260px;
 }
 
 /* Barra cerrada */
 .sidebar {
-  width: 72px;
+  width: 100%;
   height: 100%;
   background: #141414;
   padding: 16px 8px;
@@ -17,18 +26,21 @@
   gap: 16px;
   transition: width 0.25s ease;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :host(.expanded) .sidebar {
   /* cuando el host tiene la clase expanded el sidebar se vuelve ancho*/
-  width: 220px;
+  box-shadow: 8px 0 20px rgba(0, 0, 0, 0.35);
 }
 
 .item {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+  row-gap: 8px;
   padding: 10px;
   border-radius: 8px;
   color: #fff;
@@ -55,12 +67,18 @@
 }
 
 .submenu {
-  margin-left: 20px;
-  padding-left: 10px;
+  flex: 1 0 100%;
+  width: 100%;
+  margin-left: 0;
+  padding-left: 16px;
   border-left: 2px solid #35303030;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  padding-right: 4px;
+  box-sizing: border-box;
   animation: fadeIn 0.2s ease;
 }
 
@@ -76,6 +94,57 @@ button {
   background-color: #141414;
   text-shadow: 0 0 8px var(--accent);
   color: var(--accent);
+}
+
+.submenu-link {
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 0;
+}
+
+.submenu-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.track-name {
+  flex: 1;
+  min-width: 0;
+  border: none;
+}
+
+.track-play-btn {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: #ffffff;
+  background: #1f1f1f;
+  text-shadow: none;
+  cursor: pointer;
+}
+
+.track-play-btn:hover {
+  background: #2a2a2a;
+}
+
+.submenu-title {
+  margin: 8px 0 2px;
+  font-size: 12px;
+  color: #a8a8a8;
+}
+
+.submenu-empty {
+  font-size: 12px;
+  color: #8b8b8b;
+  display: block;
 }
 
 @keyframes fadeIn {

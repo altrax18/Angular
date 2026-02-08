@@ -1,5 +1,38 @@
 @if (track()) {
 <article class="track-card" [routerLink]="['/trackDetail', track().trackId]">
+  <button type="button" class="track-options-btn" (click)="toggleOptionsMenu($event)">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  @if (isMenuOpen) {
+  <div class="track-options-menu" (click)="stopCardNavigation($event)">
+    <button
+      type="button"
+      (click)="isTrackInLibrary() ? removeFromLibrary($event) : addToLibrary($event)"
+    >
+      {{ isTrackInLibrary() ? 'Eliminar de biblioteca' : 'Anadir a biblioteca' }}
+    </button>
+    <button type="button" (click)="createPlaylistAndAddTrack($event)">Crear lista y guardar</button>
+    <p>Guardar en lista</p>
+
+    @if (playlistService.playlists().length === 0) {
+    <span class="empty-menu">Primero crea una lista en "Mis listas".</span>
+    } @else {
+    @for (list of playlistService.playlists(); track list.id) {
+    <button
+      type="button"
+      (click)="addToPlaylist($event, list.id)"
+      [disabled]="isTrackInPlaylist(list.id)"
+    >
+      {{ isTrackInPlaylist(list.id) ? list.name + ' (ya esta)' : list.name }}
+    </button>
+    }
+    }
+  </div>
+  }
+
   <div class="artwork-container">
     <img [src]="track().artworkUrl100" alt="Artwork for {{ track().trackName }}" />
 
@@ -20,6 +53,5 @@
 
   <h3>{{ track().trackName }}</h3>
   <p>{{ track().artistName }}</p>
-  <button type="button" (click)="addToPlaylist($event)">Guardar en lista</button>
 </article>
 }
