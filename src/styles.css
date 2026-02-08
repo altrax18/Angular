@@ -29,3 +29,26 @@ a:hover{ text-decoration: underline; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.app-snackbar {
+  --mdc-snackbar-container-color: #1f1f1f;
+  --mdc-snackbar-supporting-text-color: #f3f3f3;
+  --mat-snack-bar-button-color: #d2d2d2;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+}
+
+.app-snackbar--success {
+  --mdc-snackbar-container-color: #123323;
+  --mat-snack-bar-button-color: #9ff4c7;
+}
+
+.app-snackbar--info {
+  --mdc-snackbar-container-color: #202934;
+  --mat-snack-bar-button-color: #a8d4ff;
+}
+
+.app-snackbar--error {
+  --mdc-snackbar-container-color: #3b1b1b;
+  --mat-snack-bar-button-color: #ffb3b3;
+}

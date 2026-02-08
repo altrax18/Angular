@@ -4,6 +4,7 @@ import { Track } from '../../../core/services/music-service';
 import { RouterLink } from '@angular/router';
 import { AudioService } from '../../../core/services/audio-service';
 import { PlaylistService } from '../../../core/services/playlist-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-track-card',
@@ -23,6 +24,7 @@ export class TrackCardComponent {
 
   track = input.required<Track>();
   private audioService = inject(AudioService);
+  private snackBar = inject(MatSnackBar);
   playlistService = inject(PlaylistService);
   libraryTrackIds = signal<number[]>([]);
 
@@ -75,7 +77,10 @@ export class TrackCardComponent {
     const added = this.playlistService.addTrackToPlaylist(listId, this.track());
     this.isMenuOpen = false;
 
-    alert(added ? 'Cancion guardada en la lista.' : 'La cancion ya estaba en esa lista.');
+    this.showNotice(
+      added ? 'Cancion guardada en la lista.' : 'La cancion ya estaba en esa lista.',
+      added ? 'success' : 'info'
+    );
   }
 
   addToLibrary(event: Event) {
@@ -88,7 +93,7 @@ export class TrackCardComponent {
 
     if (exists) {
       this.isMenuOpen = false;
-      alert('La cancion ya esta en tu biblioteca.');
+      this.showNotice('La cancion ya esta en tu biblioteca.', 'info');
       return;
     }
 
@@ -97,7 +102,7 @@ export class TrackCardComponent {
     this.refreshLibraryTrackIds();
     this.isMenuOpen = false;
     window.dispatchEvent(new Event('soundhub-library-updated'));
-    alert('Cancion guardada en tu biblioteca.');
+    this.showNotice('Cancion guardada en tu biblioteca.', 'success');
   }
 
   removeFromLibrary(event: Event) {
@@ -113,7 +118,7 @@ export class TrackCardComponent {
     this.refreshLibraryTrackIds();
     this.isMenuOpen = false;
     window.dispatchEvent(new Event('soundhub-library-updated'));
-    alert('Cancion eliminada de tu biblioteca.');
+    this.showNotice('Cancion eliminada de tu biblioteca.', 'info');
   }
 
   createPlaylistAndAddTrack(event: Event) {
@@ -128,13 +133,13 @@ export class TrackCardComponent {
     const created = this.playlistService.createPlaylist(listName);
     if (!created) {
       this.isMenuOpen = false;
-      alert('Escribe un nombre valido para crear la lista.');
+      this.showNotice('Escribe un nombre valido para crear la lista.', 'error');
       return;
     }
 
     this.playlistService.addTrackToPlaylist(created.id, this.track());
     this.isMenuOpen = false;
-    alert('Lista creada y cancion guardada.');
+    this.showNotice('Lista creada y cancion guardada.', 'success');
   }
 
   isTrackInLibrary(): boolean {
@@ -206,5 +211,14 @@ export class TrackCardComponent {
     } catch {
       return [];
     }
+  }
+
+  private showNotice(message: string, type: 'success' | 'info' | 'error') {
+    this.snackBar.open(message, 'Cerrar', {
+      duration: type === 'error' ? 3600 : 2600,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+      panelClass: ['app-snackbar', `app-snackbar--${type}`],
+    });
   }
 }
