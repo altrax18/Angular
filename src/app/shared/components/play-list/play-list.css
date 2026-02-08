@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  color: #fff;
+}
+
+.create-row {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.create-row input {
+  min-width: 240px;
+}
+
+.lists-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.list-names {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-names button {
+  text-align: left;
+}
+
+.list-tracks {
+  flex: 1;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.track-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}

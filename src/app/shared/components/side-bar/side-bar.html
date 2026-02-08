@@ -1,8 +1,17 @@
 <nav class="sidebar" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
 
-  <div class="item" routerLink="#">
+  <div class="item" (mouseenter)="onMouseEnterLibrary()" (mouseleave)="onMouseLeaveLibrary()">
     <span class="icon">*</span>
     <span class="label">Biblioteca</span>
+
+    @if (isLibraryMenuOpen && expanded) {
+    <div class="submenu">
+      <button routerLink="/playlists">+ Crear lista</button>
+      @for (list of playlistService.playlists(); track list.id) {
+      <button routerLink="/playlists">{{ list.name }}</button>
+      }
+    </div>
+    }
   </div>
   <div class="item" routerLink="/profile">
     <span class="icon">*</span>

@@ -1,1 +1,43 @@
-<h1>AQUI IRA LA LISTA</h1>
+<h2>Mis listas</h2>
+
+<div class="create-row">
+  <input type="text" [(ngModel)]="newListName" placeholder="Nombre de la lista" />
+  <button type="button" (click)="createList()">Crear lista</button>
+</div>
+
+@if (playlists().length === 0) {
+<p>No tienes listas todavia. Crea una para empezar.</p>
+} @else {
+<div class="lists-layout">
+  <div class="list-names">
+    @for (list of playlists(); track list.id) {
+    <button type="button" (click)="selectList(list.id)">
+      {{ list.name }} ({{ list.tracks.length }})
+    </button>
+    }
+  </div>
+
+  @if (selectedList(); as currentList) {
+  <div class="list-tracks">
+    <div class="list-header">
+      <h3>{{ currentList.name }}</h3>
+      <button type="button" (click)="deleteList(currentList.id)">Eliminar lista</button>
+    </div>
+
+    @if (currentList.tracks.length === 0) {
+    <p>Esta lista esta vacia.</p>
+    } @else {
+    @for (track of currentList.tracks; track track.trackId) {
+    <div class="track-row">
+      <span>{{ track.trackName }} - {{ track.artistName }}</span>
+      <div class="actions">
+        <button type="button" (click)="playTrack(track, currentList.tracks)">Reproducir</button>
+        <button type="button" (click)="removeTrack(track.trackId)">Quitar</button>
+      </div>
+    </div>
+    }
+    }
+  </div>
+  }
+</div>
+}
